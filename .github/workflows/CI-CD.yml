@@ -8,16 +8,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: mydatabase
-          MYSQL_USER: user
-          MYSQL_PASSWORD: password
-        ports:
-          - 3306:3306
+    # services:
+    #   mysql:
+    #     image: mysql:5.7
+    #     env:
+    #       MYSQL_ROOT_PASSWORD: root
+    #       MYSQL_DATABASE: mydatabase
+    #       MYSQL_USER: root
+    #       MYSQL_PASSWORD: password
+    #     ports:
+    #       - 3306:3306
 
     steps:
       - name: Checkout Code
@@ -34,6 +34,6 @@ jobs:
 
       - name: Docker Build & Push
         run: |
-          docker build -t your-dockerhub-username/your-app:latest .
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/java:latest .
           echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-          docker push your-dockerhub-username/your-app:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/java:latest
