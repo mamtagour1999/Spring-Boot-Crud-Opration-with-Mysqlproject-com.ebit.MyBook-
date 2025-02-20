@@ -1,0 +1,29 @@
+name: CI/CD Pipeline  # Workflow ka naam
+
+on:
+  push:
+    branches:
+      - main  # Jab bhi main branch pe push hoga, yeh pipeline chalega
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Linux server pe chalega
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3  # GitHub repository ka code pull karega
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'  # Java 17 install karega
+          distribution: 'temurin'
+
+      - name: Build with Maven
+        run: mvn clean package  # Java project build karega
+
+      - name: Docker Build & Push
+        run: |
+          docker build -t your-dockerhub-username/your-app:latest .
+          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          docker push your-dockerhub-username/your-app:latest
